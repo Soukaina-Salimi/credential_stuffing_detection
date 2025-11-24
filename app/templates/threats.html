@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>⚠️ Menaces & Sanctions - Security Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        /* Cartes de Menaces */
+        .threat-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            background: white;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .threat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        /* En-tête coloré selon sévérité */
+        .threat-header {
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .threat-header-LOW { background: linear-gradient(135deg, #28a745, #20c997); }
+        .threat-header-MEDIUM { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+        .threat-header-HIGH { background: linear-gradient(135deg, #fd7e14, #e83e8c); }
+        .threat-header-CRITICAL { background: linear-gradient(135deg, #dc3545, #bd2130); }
+
+        .threat-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Score Badge */
+        .score-badge {
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        /* Corps de la carte */
+        .threat-body {
+            padding: 20px;
+        }
+
+        /* Sections organisées */
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-section-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Grille de stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-value.success { color: #28a745; }
+        .stat-value.danger { color: #dc3545; }
+        .stat-value.info { color: #17a2b8; }
+        .stat-value.warning { color: #ffc107; }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Barres de composants */
+        .component-bar {
+            margin-bottom: 10px;
+        }
+
+        .component-label {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .component-progress {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .component-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Badges utilisateurs */
+        .user-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .user-badge {
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .user-badge.hvt {
+            background: #ffe7e7;
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Boîte sanction */
+        .sanction-box {
+            background: linear-gradient(135deg, #fff3cd, #ffe69c);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .sanction-box.blocked {
+            background: linear-gradient(135deg, #f8d7da, #f1aeb5);
+            border-left-color: #dc3545;
+        }
+
+        .sanction-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* Liste des raisons */
+        .reasons-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .reasons-list li {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Sidebar Stats */
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .stat-box-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 8px;
+        }
+
+        .filter-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-pills .nav-link {
+            cursor: pointer;
+            padding: 6px 12px;
+            font-size: 0.9em;
+            border-radius: 20px;
+        }
+
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* Bouton refresh */
+        .btn-refresh {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid">
+        
+        <div class="text-end mb-3">
+            <button id="refreshBtn" class="btn btn-refresh">⟳ Rafraîchir</button>
+        </div>
+
+        <div class="row">
+            
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                
+                <div class="row">
+                    <div class="col-6 col-lg-12">
+                        <div class="stat-box">
+                            <div class="stat-number text-warning" id="stat-total-threats">0</div>
+                            <div class="stat-box-label">⚠️ Total Menaces</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-12">
+                        <div class="stat-box">
+                            <div class="stat-number text-danger" id="stat-critical">0</div>
+                            <div class="stat-box-label">🔴 Critiques</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-12">
+                        <div class="stat-box">
+                            <div class="stat-number text-success" id="stat-blocked">0</div>
+                            <div class="stat-box-label">🚫 IPs Bloquées</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-12">
+                        <div class="stat-box">
+                            <div class="stat-number text-info" id="stat-monitored">0</div>
+                            <div class="stat-box-label">👁️ IPs Surveillées</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-card">
+                    <h6 class="mb-3">🔍 Options de Filtrage</h6>
+                    <div class="mb-3">
+                        <label class="form-label mb-2">Sévérité:</label>
+                        <ul class="nav nav-pills flex-column small" id="severityFilter">
+                            <li class="nav-item mb-1"><a class="nav-link active" data-severity="ALL">Tous</a></li>
+                            <li class="nav-item mb-1"><a class="nav-link" data-severity="CRITICAL">🔴 Critique</a></li>
+                            <li class="nav-item mb-1"><a class="nav-link" data-severity="HIGH">🟠 Élevé</a></li>
+                            <li class="nav-item mb-1"><a class="nav-link" data-severity="MEDIUM">🟡 Moyen</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <label class="form-label mb-2">Recherche IP:</label>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par IP...">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Contenu Principal -->
+            <div class="col-lg-9">
+                <div id="threatsContainer">
+                    <div class="text-center text-white py-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p class="mt-2">Chargement des menaces...</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let allThreats = [];
+        let allSanctions = {};
+        let currentFilter = 'ALL';
+
+        async function fetchData() {
+            document.getElementById("threatsContainer").innerHTML = `
+                <div class="text-center text-white py-5">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Chargement des menaces...</p>
+                </div>
+            `;
+            
+            try {
+                const [scoresRes, sanctionsRes] = await Promise.all([
+                    fetch("/api/scores"),
+                    fetch("/api/sanctions")
+                ]);
+
+                const scores = await scoresRes.json();
+                const sanctions = await sanctionsRes.json();
+
+                allThreats = Object.values(scores).filter(t => t.entity_type === 'IP');
+                allSanctions = sanctions;
+
+                updateStats();
+                displayThreats();
+            } catch (error) {
+                console.error("Erreur:", error);
+                document.getElementById("threatsContainer").innerHTML =
+                    '<div class="alert alert-danger mx-auto" style="max-width: 600px;">❌ Erreur lors du chargement des données.</div>';
+            }
+        }
+
+        function updateStats() {
+            const totalThreats = allThreats.length;
+            const criticalCount = allThreats.filter(t => t.severity === 'CRITICAL').length;
+
+            // Compter les IPs bloquées (HIGH et CRITICAL)
+            const blockedCount = allThreats.filter(t => 
+                t.severity === 'HIGH' || t.severity === 'CRITICAL'
+            ).length;
+            
+            // Compter les IPs surveillées (MEDIUM uniquement)
+            const monitoredCount = allThreats.filter(t => 
+                t.severity === 'MEDIUM'
+            ).length;
+
+            document.getElementById("stat-total-threats").textContent = totalThreats;
+            document.getElementById("stat-critical").textContent = criticalCount;
+            document.getElementById("stat-blocked").textContent = blockedCount;
+            document.getElementById("stat-monitored").textContent = monitoredCount;
+        }
+
+        function displayThreats() {
+            const container = document.getElementById("threatsContainer");
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+
+            let filtered = allThreats;
+
+            if (currentFilter !== 'ALL') {
+                filtered = filtered.filter(t => t.severity === currentFilter);
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(t => t.entity_value.toLowerCase().includes(searchTerm));
+            }
+
+            filtered.sort((a, b) => b.score - a.score);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="card p-5 text-center" style="background: white; border-radius: 15px;">
+                        <h4>✅ Aucune menace trouvée</h4>
+                        <p class="text-muted">Tous les systèmes sont sécurisés</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(t => createThreatCard(t)).join("");
+        }
+
+        function createThreatCard(threat) {
+            const sanction = allSanctions[`${threat.entity_type}:${threat.entity_value}`];
+            const stats = threat.stats || {};
+            const components = threat.components || {};
+
+            // Stats principales
+            const statsHtml = `
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value">${stats.total_attempts || 0}</span>
+                        <div class="stat-label">📊 Tentatives</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value danger">${stats.failed_attempts || 0}</span>
+                        <div class="stat-label">❌ Échecs</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value success">${stats.success_attempts || 0}</span>
+                        <div class="stat-label">✅ Succès</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value info">${Array.isArray(stats.unique_users) ? stats.unique_users.length : 0}</span>
+                        <div class="stat-label">👥 Utilisateurs</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value warning">${Array.isArray(stats.countries) ? stats.countries.length : 0}</span>
+                        <div class="stat-label">🌍 Pays</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" style="font-size: 1.2em;">${stats.first_seen ? new Date(stats.first_seen).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : '-'}</span>
+                        <div class="stat-label">⏱️ Première Vue</div>
+                    </div>
+                </div>
+            `;
+
+            // Composants du score
+            const componentBars = Object.entries(components)
+                .filter(([_, value]) => value > 0)
+                .sort((a, b) => b[1] - a[1])
+                .map(([name, value]) => {
+                    const width = Math.round(value);
+                    const label = formatComponentName(name);
+                    return `
+                        <div class="component-bar">
+                            <div class="component-label">
+                                <span>${label}</span>
+                                <strong>${width}%</strong>
+                            </div>
+                            <div class="component-progress">
+                                <div class="component-fill" style="width: ${width}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            // Stats agrégées
+            const statsInfo = stats || {};
+            const countriesList = Array.isArray(statsInfo.countries) && statsInfo.countries.length > 0 
+                ? statsInfo.countries.join(', ') 
+                : '-';
+
+            // Raisons
+            const reasons = (threat.reasons || []).map(r => `<li>⚡ ${r}</li>`).join('');
+
+            // Utilisateurs
+            const usersHtml = Array.isArray(stats.unique_users) && stats.unique_users.length > 0 ? `
+                <div class="info-section">
+                    <div class="info-section-title">👥 Utilisateurs Ciblés (${stats.unique_users.length})</div>
+                    <div class="user-badges">
+                        ${stats.unique_users.slice(0, 8).map(u => 
+                            `<span class="user-badge">${u}</span>`
+                        ).join('')}
+                        ${stats.unique_users.length > 8 ? `<span class="user-badge">+${stats.unique_users.length - 8}</span>` : ''}
+                    </div>
+                </div>
+            ` : '';
+
+            // Comptes sensibles
+            const hvtHtml = Array.isArray(stats.targeted_hvt) && stats.targeted_hvt.length > 0 ? `
+                <div class="info-section" style="background: #ffe7e7;">
+                    <div class="info-section-title" style="color: #dc3545;">🎯 Comptes Sensibles</div>
+                    <div class="user-badges">
+                        ${stats.targeted_hvt.map(u => 
+                            `<span class="user-badge hvt">${u}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            ` : '';
+
+            // Pays
+            const countriesHtml = Array.isArray(stats.countries) && stats.countries.length > 0 ? `
+                <div><strong>🌍 Pays:</strong> ${stats.countries.join(', ')}</div>
+            ` : '';
+
+            // Sanction
+            let sanctionHtml = '';
+            if (sanction && sanction.active) {
+                const expiresAt = sanction.expires_at
+                    ? `Expire: ${new Date(sanction.expires_at).toLocaleString('fr-FR')}`
+                    : 'Permanent';
+
+                sanctionHtml = `
+                    <div class="sanction-box ${sanction.blocked ? 'blocked' : ''}">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="sanction-title" style="font-size: 1.1em;">
+                                ${sanction.blocked ? '🚫 IP BLOQUÉE' : '👁️ SOUS SURVEILLANCE'}
+                            </div>
+                        </div>
+                        <div><strong>${sanction.action.replace(/_/g, ' ').toUpperCase()}</strong></div>
+                        <div class="mt-2">${sanction.description}</div>
+                        <small class="text-muted d-block mt-2">${expiresAt}</small>
+                        <div class="mt-3">
+                            <button class="btn btn-danger w-100" style="padding: 12px; font-size: 1.05em; font-weight: 600;" onclick="removeSanction('${threat.entity_type}', '${threat.entity_value}')">
+                                🔓 Lever la Sanction
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (threat.severity === 'MEDIUM') {
+                // Message pour les menaces MEDIUM sans sanction active
+                sanctionHtml = `
+                    <div class="sanction-box" style="background: linear-gradient(135deg, #fff9e6, #ffe69c); border-left-color: #ffc107;">
+                        <div class="sanction-title" style="font-size: 1.1em;">
+                            👁️ IP SOUS SURVEILLANCE
+                        </div>
+                        <div class="mt-2">Cette adresse IP est actuellement surveillée en raison d'une activité suspecte de niveau moyen.</div>
+                        <small class="text-muted d-block mt-2">Surveillance automatique active</small>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="threat-card">
+                    <div class="threat-header threat-header-${threat.severity}">
+                        <div>
+                            <h5>🌐 ${threat.entity_value}</h5>
+                            <div>${countriesHtml}</div>
+                        </div>
+                        <div class="score-badge">${threat.score}</div>
+                    </div>
+                    
+                    <div class="threat-body">
+                        
+                        ${statsHtml}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="info-section">
+                                    <div class="info-section-title">📊 Composition du Score</div>
+                                    ${componentBars || '<p class="text-muted mb-0">Aucun composant actif</p>'}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="info-section">
+                                    <div class="info-section-title">🔍 Raisons de Détection</div>
+                                    <ul class="reasons-list">
+                                        ${reasons || '<li>Aucune raison spécifiée</li>'}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${usersHtml}
+                        ${hvtHtml}
+                        ${sanctionHtml}
+                        
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatComponentName(name) {
+            const names = {
+                'failed_attempts': 'Tentatives Échouées',
+                'attack_speed': 'Vitesse d\'Attaque',
+                'tool_detection': 'Outils Automatisés',
+                'geographic_risk': 'Risque Géographique',
+                'user_spread': 'Dispersion Multi-Comptes',
+                'persistence': 'Persistance'
+            };
+            return names[name] || name.replace(/_/g, ' ').toUpperCase();
+        }
+
+        async function removeSanction(type, value) {
+            if (!confirm(`Êtes-vous sûr de vouloir lever la sanction pour ${type}: ${value} ?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/remove-sanction', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({type, value})
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('✅ Sanction levée avec succès!');
+                    fetchData();
+                } else {
+                    alert('❌ Erreur: ' + (result.error || 'Erreur inconnue'));
+                }
+            } catch (error) {
+                alert("❌ Erreur de connexion au serveur");
+                console.error(error);
+            }
+        }
+
+        document.getElementById("refreshBtn").addEventListener("click", fetchData);
+        document.getElementById("searchInput").addEventListener("input", displayThreats);
+
+        document.querySelectorAll('#severityFilter .nav-link').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelectorAll('#severityFilter .nav-link').forEach(l => l.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.severity;
+                displayThreats();
+            });
+        });
+
+        fetchData();
+        setInterval(fetchData, 15000); // Actualisation automatique toutes les 15 secondes
+    </script>
+
+</body>
+</html>

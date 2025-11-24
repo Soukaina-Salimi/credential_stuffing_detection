@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard - Credential Stuffing</title>
+
+  <!-- Bootstrap CSS (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Chart.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    body { background:#f7f9fc; }
+    .card { box-shadow: 0 2px 6px rgba(15,20,30,0.06); }
+    pre.log-line { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; white-space: pre-wrap; }
+    .small-muted { font-size: .85rem; color: #6c757d; }
+    .table-scroll { max-height: 400px; overflow:auto; }
+    
+    /* Indicateur temps réel */
+    .realtime-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .realtime-indicator.active {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .realtime-indicator.inactive {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #28a745;
+      animation: pulse 2s infinite;
+    }
+    
+    .pulse-dot.inactive {
+      background: #dc3545;
+      animation: none;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    
+    /* Ligne d'événement nouvelle */
+    .new-event {
+      animation: highlight 2s ease-out;
+    }
+    
+    @keyframes highlight {
+      0% { background-color: #fff3cd; }
+      100% { background-color: transparent; }
+    }
+    
+    /* Badge de statut */
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========================== -->
+<!-- NAVBAR INCLUSE -->
+<!-- ========================== -->
+{% include 'navbar.html' %}
+
+<div class="container-fluid mt-4">
+  
+  <!-- CONTRÔLES TEMPS RÉEL -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="mb-0">📊 Dashboard en Temps Réel</h4>
+      <small class="text-muted">Dernière mise à jour : <span id="lastUpdate">-</span></small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <!-- Indicateur temps réel -->
+      <div id="realtimeIndicator" class="realtime-indicator active">
+        <span class="pulse-dot"></span>
+        <span>Temps réel actif</span>
+      </div>
+      
+      <!-- Switch auto-refresh -->
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="autoRefreshSwitch" checked>
+        <label class="form-check-label" for="autoRefreshSwitch">
+          Auto-refresh
+        </label>
+      </div>
+      
+      <!-- Sélecteur d'intervalle -->
+      <select id="refreshInterval" class="form-select form-select-sm" style="width: auto;">
+        <option value="2000">2 sec</option>
+        <option value="5000" selected>5 sec</option>
+        <option value="10000">10 sec</option>
+        <option value="30000">30 sec</option>
+      </select>
+      
+      <!-- Bouton refresh manuel -->
+      <button id="manualRefresh" class="btn btn-primary btn-sm">
+        <span id="refreshIcon">⟳</span> Rafraîchir
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-3">
+
+    <!-- STATS + GRAPHS -->
+    <div class="col-12 col-lg-4">
+      <div class="card p-3 mb-3">
+        <h5>Statistiques (période affichée)</h5>
+        <div class="row text-center mt-3">
+          <div class="col-4">
+            <div class="h3" id="stat-total">0</div>
+            <div class="small-muted">Événements</div>
+          </div>
+          <div class="col-4">
+            <div class="h3 text-danger" id="stat-fails">0</div>
+            <div class="small-muted">Échecs</div>
+          </div>
+          <div class="col-4">
+            <div class="h3 text-success" id="stat-success">0</div>
+            <div class="small-muted">Succès</div>
+          </div>
+        </div>
+
+        <hr>
+
+        <h6 class="mb-2">Top IPs</h6>
+        <canvas id="chart-ips" height="120"></canvas>
+
+        <hr>
+
+        <h6 class="mb-2">Top Users</h6>
+        <canvas id="chart-users" height="120"></canvas>
+      </div>
+
+      <div class="card p-3">
+        <h6>Filtres rapides</h6>
+        <input id="filter-ip" class="form-control form-control-sm mb-2" placeholder="Filtrer par IP">
+        <input id="filter-user" class="form-control form-control-sm" placeholder="Filtrer par utilisateur">
+      </div>
+    </div>
+
+    <!-- TABLE EVENTS -->
+    <div class="col-12 col-lg-8">
+      <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="mb-0">Événements récents</h5>
+          <span class="badge bg-primary" id="eventCount">0 événements</span>
+        </div>
+        <div class="table-scroll mt-2">
+          <table class="table table-sm table-striped table-hover" id="eventsTable">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>IP</th>
+                <th>Utilisateur</th>
+                <th>Status</th>
+                <th>Country</th>
+                <th>UA</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card p-3 mt-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="mb-0">Alertes</h5>
+          <span class="badge bg-danger" id="alertCount">0 alertes</span>
+        </div>
+        <div class="table-scroll mt-2">
+          <table class="table table-sm table-striped table-hover" id="alertsTable">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th>Type</th>
+                <th>User/IP</th>
+                <th>Reason</th>
+                <th>Date</th>
+                <th>Heure</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ==========================
+// VARIABLES GLOBALES
+// ==========================
+let autoRefreshInterval = null;
+let previousEventCount = 0;
+let ipsChart, usersChart;
+
+// ==========================
+// FETCH DATA
+// ==========================
+async function fetchData() {
+  try {
+    const refreshIcon = document.getElementById('refreshIcon');
+    refreshIcon.style.transform = 'rotate(360deg)';
+    refreshIcon.style.transition = 'transform 0.5s';
+    
+    const [eventsRes, alertsRes] = await Promise.all([fetch("/events"), fetch("/alerts")]);
+    
+    const events = await eventsRes.json();
+    const alerts = await alertsRes.json();
+    
+    updateStats(events);
+    updateTables(events, alerts);
+    updateCharts(events);
+    updateLastUpdateTime();
+    
+    const newEventCount = events.length - previousEventCount;
+    if (newEventCount > 0 && previousEventCount > 0) {
+      showNotification(`${newEventCount} nouveau(x) événement(s)`);
+    }
+    previousEventCount = events.length;
+    
+    setTimeout(() => { refreshIcon.style.transform = 'rotate(0deg)'; }, 500);
+  } catch (error) {
+    console.error('Erreur lors du chargement des données:', error);
+    updateRealtimeIndicator(false);
+  }
+}
+
+// ==========================
+// UPDATE STATS
+// ==========================
+function updateStats(events) {
+  const total = events.length;
+  const fails = events.filter(e => e.status === "FAIL").length;
+  const success = events.filter(e => e.status === "SUCCESS").length;
+  
+  document.getElementById("stat-total").textContent = total;
+  document.getElementById("stat-fails").textContent = fails;
+  document.getElementById("stat-success").textContent = success;
+}
+
+// ==========================
+// UPDATE TABLES
+// ==========================
+function updateTables(events, alerts) {
+  const tbodyEvents = document.querySelector("#eventsTable tbody");
+  const filterIP = document.getElementById("filter-ip").value;
+  const filterUser = document.getElementById("filter-user").value;
+  
+  let filteredEvents = events.slice().reverse();
+  
+  if (filterIP) filteredEvents = filteredEvents.filter(e => e.ip.includes(filterIP));
+  if (filterUser) filteredEvents = filteredEvents.filter(e => e.user.includes(filterUser));
+  
+  document.getElementById("eventCount").textContent = `${filteredEvents.length} événements`;
+  
+  tbodyEvents.innerHTML = "";
+  filteredEvents.forEach((e, index) => {
+    const tr = document.createElement("tr");
+    if (index < 5) tr.classList.add("new-event");
+    
+    const statusClass = e.status === "FAIL" ? "text-danger" : "text-success";
+    const countryBadge = e.country === "LAN" ? "bg-success" : "bg-warning text-dark";
+    
+    tr.innerHTML = `
+      <td>${e.date}</td>
+      <td><small>${e.time}</small></td>
+      <td><code style="font-size: 0.85em;">${e.ip}</code></td>
+      <td><strong>${e.user}</strong></td>
+      <td><span class="status-badge ${statusClass}">${e.status}</span></td>
+      <td><span class="badge ${countryBadge}">${e.country}</span></td>
+      <td><small class="text-muted">${e.ua.substring(0, 30)}...</small></td>
+    `;
+    
+    tbodyEvents.appendChild(tr);
+  });
+
+  // ===== ALERTES =====
+  const tbodyAlerts = document.querySelector("#alertsTable tbody");
+  tbodyAlerts.innerHTML = "";
+  document.getElementById("alertCount").textContent = `${alerts.length} alertes`;
+  
+  alerts.slice().reverse().forEach(a => {
+    const tr = document.createElement("tr");
+    const alertTypeClass = a.type === "Brute force IP" ? "bg-danger" : "bg-warning text-dark";
+    
+    tr.innerHTML = `
+      <td><span class="badge ${alertTypeClass}">${a.type}</span></td>
+      <td><code>${a.user || a.ip}</code></td>
+      <td>${a.reason || (a.reasons ? a.reasons.join(', ') : '-')}</td>
+      <td>${a.date}</td>
+      <td><small>${a.time}</small></td>
+    `;
+    tbodyAlerts.appendChild(tr);
+  });
+}
+
+// ==========================
+// UPDATE CHARTS
+// ==========================
+function updateCharts(events) {
+  const ipsCount = {}, usersCount = {};
+  
+  events.forEach(e => { 
+    ipsCount[e.ip] = (ipsCount[e.ip] || 0) + 1; 
+    usersCount[e.user] = (usersCount[e.user] || 0) + 1; 
+  });
+  
+  const topIps = Object.entries(ipsCount).sort((a,b) => b[1] - a[1]).slice(0, 5);
+  const topUsers = Object.entries(usersCount).sort((a,b) => b[1] - a[1]).slice(0, 5);
+  
+  const ipsLabels = topIps.map(e => e[0]);
+  const ipsData = topIps.map(e => e[1]);
+  const usersLabels = topUsers.map(e => e[0]);
+  const usersData = topUsers.map(e => e[1]);
+
+  if (!ipsChart) { 
+    const ctx = document.getElementById("chart-ips").getContext("2d");
+    ipsChart = new Chart(ctx, { type: 'bar', data: { labels: ipsLabels, datasets: [{ label: 'Connexion', data: ipsData, backgroundColor: 'rgba(0,123,255,0.6)'}] }, options: { responsive: true, plugins: { legend: { display: false } } } });
+  } else { 
+    ipsChart.data.labels = ipsLabels; 
+    ipsChart.data.datasets[0].data = ipsData; 
+    ipsChart.update(); 
+  }
+
+  if (!usersChart) { 
+    const ctx2 = document.getElementById("chart-users").getContext("2d");
+    usersChart = new Chart(ctx2, { type: 'bar', data: { labels: usersLabels, datasets: [{ label: 'Connexion', data: usersData, backgroundColor: 'rgba(40,167,69,0.6)'}] }, options: { responsive: true, plugins: { legend: { display: false } } } });
+  } else { 
+    usersChart.data.labels = usersLabels; 
+    usersChart.data.datasets[0].data = usersData; 
+    usersChart.update(); 
+  }
+}
+
+// ==========================
+// UPDATE LAST UPDATE TIME
+// ==========================
+function updateLastUpdateTime() {
+  const now = new Date();
+  document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('fr-FR');
+}
+
+// ==========================
+// UPDATE REALTIME INDICATOR
+// ==========================
+function updateRealtimeIndicator(isActive) {
+  const indicator = document.getElementById('realtimeIndicator');
+  const dot = indicator.querySelector('.pulse-dot');
+  const text = indicator.querySelector('span:last-child');
+  
+  if (isActive) {
+    indicator.classList.remove('inactive');
+    indicator.classList.add('active');
+    dot.classList.remove('inactive');
+    text.textContent = 'Temps réel actif';
+  } else {
+    indicator.classList.remove('active');
+    indicator.classList.add('inactive');
+    dot.classList.add('inactive');
+    text.textContent = 'Temps réel inactif';
+  }
+}
+
+// ==========================
+// NOTIFICATION
+// ==========================
+function showNotification(message) {
+  const toast = document.createElement('div');
+  toast.className = 'position-fixed top-0 end-0 p-3';
+  toast.style.zIndex = '9999';
+  toast.innerHTML = `
+    <div class="toast show" role="alert">
+      <div class="toast-header">
+        <strong class="me-auto">🔔 Nouveau</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body">${message}</div>
+    </div>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 3000);
+}
+
+// ==========================
+// AUTO REFRESH MANAGEMENT
+// ==========================
+function startAutoRefresh() {
+  const interval = parseInt(document.getElementById('refreshInterval').value);
+  if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+  autoRefreshInterval = setInterval(fetchData, interval);
+  updateRealtimeIndicator(true);
+}
+
+function stopAutoRefresh() {
+  if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+  autoRefreshInterval = null;
+  updateRealtimeIndicator(false);
+}
+
+// ==========================
+// EVENT LISTENERS
+// ==========================
+document.getElementById("filter-ip").addEventListener("input", fetchData);
+document.getElementById("filter-user").addEventListener("input", fetchData);
+document.getElementById("manualRefresh").addEventListener("click", fetchData);
+document.getElementById("autoRefreshSwitch").addEventListener("change", (e) => e.target.checked ? startAutoRefresh() : stopAutoRefresh());
+document.getElementById("refreshInterval").addEventListener("change", () => {
+  if (document.getElementById("autoRefreshSwitch").checked) startAutoRefresh();
+});
+
+fetchData();
+startAutoRefresh();
+</script>
+
+</body>
+</html>
