@@ -1,0 +1,209 @@
+[
+    {
+        "type": "Threat Detection",
+        "ip": "177.55.173.80",
+        "score": 61.62,
+        "severity": "HIGH",
+        "reasons": [
+            "10 tentatives échouées (90.9%)",
+            "Attaque modérée (1.13s/req)",
+            "Outil automatisé: curl/8.1.2"
+        ],
+        "total_attempts": 11,
+        "failed_attempts": 10,
+        "unique_users": 1,
+        "countries": [
+            "BR"
+        ],
+        "date": "2025-11-24",
+        "time": "23:14:41.352"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "116.10.67.37",
+        "score": 53.41,
+        "severity": "MEDIUM",
+        "reasons": [
+            "8 tentatives échouées (72.7%)",
+            "Attaque modérée (1.13s/req)",
+            "Outil automatisé: curl/8.1.2"
+        ],
+        "total_attempts": 11,
+        "failed_attempts": 8,
+        "unique_users": 1,
+        "countries": [
+            "CN"
+        ],
+        "date": "2025-11-24",
+        "time": "23:14:49.933"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "185.104.155.114",
+        "score": 43.26,
+        "severity": "MEDIUM",
+        "reasons": [
+            "12 tentatives échouées (70.6%)",
+            "Attaque modérée (1.13s/req)",
+            "Pays à haut risque: RU"
+        ],
+        "total_attempts": 17,
+        "failed_attempts": 12,
+        "unique_users": 1,
+        "countries": [
+            "RU"
+        ],
+        "date": "2025-11-24",
+        "time": "23:14:58.356"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "170.79.212.33",
+        "score": 86.0,
+        "severity": "CRITICAL",
+        "reasons": [
+            "51 tentatives échouées (83.6%)",
+            "Attaque rapide (0.47s/req)",
+            "Outil automatisé: sqlmap/1.7-dev"
+        ],
+        "total_attempts": 61,
+        "failed_attempts": 51,
+        "unique_users": 23,
+        "countries": [
+            "BR"
+        ],
+        "date": "2025-11-24",
+        "time": "23:15:29.705"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "185.53.218.105",
+        "score": 33.26,
+        "severity": "MEDIUM",
+        "reasons": [
+            "12 tentatives échouées (75.0%)",
+            "Attaque modérée (1.30s/req)"
+        ],
+        "total_attempts": 16,
+        "failed_attempts": 12,
+        "unique_users": 1,
+        "countries": [
+            "NL"
+        ],
+        "date": "2025-11-24",
+        "time": "23:15:24.485"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "91.215.106.69",
+        "score": 55.28,
+        "severity": "MEDIUM",
+        "reasons": [
+            "9 tentatives échouées (90.0%)",
+            "Attaque modérée (1.11s/req)",
+            "Outil automatisé: hydra/9.4 brute-force"
+        ],
+        "total_attempts": 10,
+        "failed_attempts": 9,
+        "unique_users": 1,
+        "countries": [
+            "RU"
+        ],
+        "date": "2025-11-24",
+        "time": "23:15:29.193"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "186.212.189.207",
+        "score": 44.54,
+        "severity": "MEDIUM",
+        "reasons": [
+            "16 tentatives échouées (88.9%)",
+            "Attaque modérée (1.13s/req)",
+            "Pays à haut risque: BR"
+        ],
+        "total_attempts": 18,
+        "failed_attempts": 16,
+        "unique_users": 1,
+        "countries": [
+            "BR"
+        ],
+        "date": "2025-11-24",
+        "time": "23:15:43.109"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "92.63.107.27",
+        "score": 86.0,
+        "severity": "CRITICAL",
+        "reasons": [
+            "52 tentatives échouées (86.7%)",
+            "Attaque rapide (0.49s/req)",
+            "Outil automatisé: curl/8.1.2"
+        ],
+        "total_attempts": 60,
+        "failed_attempts": 52,
+        "unique_users": 25,
+        "countries": [
+            "RU"
+        ],
+        "date": "2025-11-24",
+        "time": "23:16:00.896"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "91.215.30.119",
+        "score": 59.11,
+        "severity": "MEDIUM",
+        "reasons": [
+            "14 tentatives échouées (93.3%)",
+            "Attaque modérée (1.39s/req)",
+            "Outil automatisé: curl/8.1.2"
+        ],
+        "total_attempts": 15,
+        "failed_attempts": 14,
+        "unique_users": 1,
+        "countries": [
+            "RU"
+        ],
+        "date": "2025-11-24",
+        "time": "23:15:54.687"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "5.56.59.52",
+        "score": 31.62,
+        "severity": "MEDIUM",
+        "reasons": [
+            "10 tentatives échouées (66.7%)",
+            "Attaque modérée (1.22s/req)"
+        ],
+        "total_attempts": 15,
+        "failed_attempts": 10,
+        "unique_users": 1,
+        "countries": [
+            "DE"
+        ],
+        "date": "2025-11-24",
+        "time": "23:16:07.825"
+    },
+    {
+        "type": "Threat Detection",
+        "ip": "36.102.53.11",
+        "score": 55.28,
+        "severity": "MEDIUM",
+        "reasons": [
+            "9 tentatives échouées (81.8%)",
+            "Attaque modérée (1.02s/req)",
+            "Outil automatisé: curl/8.1.2"
+        ],
+        "total_attempts": 11,
+        "failed_attempts": 9,
+        "unique_users": 1,
+        "countries": [
+            "CN"
+        ],
+        "date": "2025-11-24",
+        "time": "23:16:13.001"
+    }
+]

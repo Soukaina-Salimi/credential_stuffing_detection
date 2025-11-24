@@ -1,0 +1,471 @@
+{
+    "IP:177.55.173.80": {
+        "entity_type": "IP",
+        "entity_value": "177.55.173.80",
+        "score": 61.62,
+        "severity": "HIGH",
+        "reasons": [
+            "10 tentatives échouées (90.9%)",
+            "Attaque modérée (1.13s/req)",
+            "Outil automatisé: curl/8.1.2",
+            "Pays à haut risque: BR",
+            "Comptes sensibles ciblés: superuser"
+        ],
+        "components": {
+            "failed_attempts": 21.62,
+            "attack_speed": 10.0,
+            "tool_detection": 15,
+            "geographic_risk": 10,
+            "user_spread": 5,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 11,
+            "failed_attempts": 10,
+            "success_attempts": 1,
+            "unique_users": [
+                "superuser"
+            ],
+            "countries": [
+                "BR"
+            ],
+            "user_agents": [
+                "curl/8.1.2"
+            ],
+            "targeted_hvt": [
+                "superuser"
+            ],
+            "first_seen": "2025-11-24 23:14:30",
+            "last_seen": "2025-11-24 23:14:41"
+        }
+    },
+    "IP:116.10.67.37": {
+        "entity_type": "IP",
+        "entity_value": "116.10.67.37",
+        "score": 53.41,
+        "severity": "MEDIUM",
+        "reasons": [
+            "8 tentatives échouées (72.7%)",
+            "Attaque modérée (1.13s/req)",
+            "Outil automatisé: curl/8.1.2",
+            "Pays à haut risque: CN"
+        ],
+        "components": {
+            "failed_attempts": 18.41,
+            "attack_speed": 10.0,
+            "tool_detection": 15,
+            "geographic_risk": 10,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 11,
+            "failed_attempts": 8,
+            "success_attempts": 3,
+            "unique_users": [
+                "mehdi"
+            ],
+            "countries": [
+                "CN"
+            ],
+            "user_agents": [
+                "curl/8.1.2"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:14:38",
+            "last_seen": "2025-11-24 23:14:49"
+        }
+    },
+    "IP:185.104.155.114": {
+        "entity_type": "IP",
+        "entity_value": "185.104.155.114",
+        "score": 43.26,
+        "severity": "MEDIUM",
+        "reasons": [
+            "12 tentatives échouées (70.6%)",
+            "Attaque modérée (1.13s/req)",
+            "Pays à haut risque: RU"
+        ],
+        "components": {
+            "failed_attempts": 23.26,
+            "attack_speed": 10.0,
+            "tool_detection": 0,
+            "geographic_risk": 10,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 17,
+            "failed_attempts": 12,
+            "success_attempts": 5,
+            "unique_users": [
+                "operator"
+            ],
+            "countries": [
+                "RU"
+            ],
+            "user_agents": [
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2) Safari/604.1"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:14:39",
+            "last_seen": "2025-11-24 23:14:58"
+        }
+    },
+    "IP:170.79.212.33": {
+        "entity_type": "IP",
+        "entity_value": "170.79.212.33",
+        "score": 86.0,
+        "severity": "CRITICAL",
+        "reasons": [
+            "51 tentatives échouées (83.6%)",
+            "Attaque rapide (0.47s/req)",
+            "Outil automatisé: sqlmap/1.7-dev",
+            "Pays à haut risque: BR",
+            "Credential stuffing: 23 utilisateurs ciblés",
+            "Comptes sensibles ciblés: admin, dbadmin, backup"
+        ],
+        "components": {
+            "failed_attempts": 25,
+            "attack_speed": 16.0,
+            "tool_detection": 15,
+            "geographic_risk": 10,
+            "user_spread": 20,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 61,
+            "failed_attempts": 51,
+            "success_attempts": 10,
+            "unique_users": [
+                "leila",
+                "hassan",
+                "superuser",
+                "youssef",
+                "developer",
+                "root",
+                "admin",
+                "operator",
+                "mohamed",
+                "dbadmin",
+                "oussama",
+                "noura",
+                "samir",
+                "sanae",
+                "itmanager",
+                "sara",
+                "ilias",
+                "amina",
+                "backup",
+                "karim",
+                "ahmed",
+                "security",
+                "mehdi"
+            ],
+            "countries": [
+                "BR"
+            ],
+            "user_agents": [
+                "sqlmap/1.7-dev"
+            ],
+            "targeted_hvt": [
+                "admin",
+                "dbadmin",
+                "backup",
+                "superuser",
+                "root",
+                "security"
+            ],
+            "first_seen": "2025-11-24 23:15:01",
+            "last_seen": "2025-11-24 23:15:29"
+        }
+    },
+    "IP:185.53.218.105": {
+        "entity_type": "IP",
+        "entity_value": "185.53.218.105",
+        "score": 33.26,
+        "severity": "MEDIUM",
+        "reasons": [
+            "12 tentatives échouées (75.0%)",
+            "Attaque modérée (1.30s/req)"
+        ],
+        "components": {
+            "failed_attempts": 23.26,
+            "attack_speed": 10.0,
+            "tool_detection": 0,
+            "geographic_risk": 0,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 16,
+            "failed_attempts": 12,
+            "success_attempts": 4,
+            "unique_users": [
+                "sara"
+            ],
+            "countries": [
+                "NL"
+            ],
+            "user_agents": [
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2) Safari/604.1"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:15:05",
+            "last_seen": "2025-11-24 23:15:24"
+        }
+    },
+    "IP:91.215.106.69": {
+        "entity_type": "IP",
+        "entity_value": "91.215.106.69",
+        "score": 55.28,
+        "severity": "MEDIUM",
+        "reasons": [
+            "9 tentatives échouées (90.0%)",
+            "Attaque modérée (1.11s/req)",
+            "Outil automatisé: hydra/9.4 brute-force",
+            "Pays à haut risque: RU"
+        ],
+        "components": {
+            "failed_attempts": 20.28,
+            "attack_speed": 10.0,
+            "tool_detection": 15,
+            "geographic_risk": 10,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 10,
+            "failed_attempts": 9,
+            "success_attempts": 1,
+            "unique_users": [
+                "mohamed"
+            ],
+            "countries": [
+                "RU"
+            ],
+            "user_agents": [
+                "hydra/9.4 brute-force"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:15:18",
+            "last_seen": "2025-11-24 23:15:29"
+        }
+    },
+    "IP:186.212.189.207": {
+        "entity_type": "IP",
+        "entity_value": "186.212.189.207",
+        "score": 44.54,
+        "severity": "MEDIUM",
+        "reasons": [
+            "16 tentatives échouées (88.9%)",
+            "Attaque modérée (1.13s/req)",
+            "Pays à haut risque: BR"
+        ],
+        "components": {
+            "failed_attempts": 24.54,
+            "attack_speed": 10.0,
+            "tool_detection": 0,
+            "geographic_risk": 10,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 18,
+            "failed_attempts": 16,
+            "success_attempts": 2,
+            "unique_users": [
+                "itmanager"
+            ],
+            "countries": [
+                "BR"
+            ],
+            "user_agents": [
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:15:23",
+            "last_seen": "2025-11-24 23:15:43"
+        }
+    },
+    "IP:92.63.107.27": {
+        "entity_type": "IP",
+        "entity_value": "92.63.107.27",
+        "score": 86.0,
+        "severity": "CRITICAL",
+        "reasons": [
+            "52 tentatives échouées (86.7%)",
+            "Attaque rapide (0.49s/req)",
+            "Outil automatisé: curl/8.1.2",
+            "Pays à haut risque: RU",
+            "Credential stuffing: 25 utilisateurs ciblés",
+            "Comptes sensibles ciblés: admin, dbadmin, backup"
+        ],
+        "components": {
+            "failed_attempts": 25,
+            "attack_speed": 16.0,
+            "tool_detection": 15,
+            "geographic_risk": 10,
+            "user_spread": 20,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 60,
+            "failed_attempts": 52,
+            "success_attempts": 8,
+            "unique_users": [
+                "leila",
+                "fatima",
+                "hassan",
+                "superuser",
+                "youssef",
+                "developer",
+                "root",
+                "admin",
+                "operator",
+                "mohamed",
+                "finance",
+                "dbadmin",
+                "oussama",
+                "noura",
+                "samir",
+                "sanae",
+                "itmanager",
+                "sara",
+                "ilias",
+                "amina",
+                "karim",
+                "backup",
+                "ahmed",
+                "security",
+                "mehdi"
+            ],
+            "countries": [
+                "RU"
+            ],
+            "user_agents": [
+                "curl/8.1.2"
+            ],
+            "targeted_hvt": [
+                "admin",
+                "dbadmin",
+                "backup",
+                "security",
+                "superuser",
+                "root",
+                "finance"
+            ],
+            "first_seen": "2025-11-24 23:15:32",
+            "last_seen": "2025-11-24 23:16:00"
+        }
+    },
+    "IP:91.215.30.119": {
+        "entity_type": "IP",
+        "entity_value": "91.215.30.119",
+        "score": 59.11,
+        "severity": "MEDIUM",
+        "reasons": [
+            "14 tentatives échouées (93.3%)",
+            "Attaque modérée (1.39s/req)",
+            "Outil automatisé: curl/8.1.2",
+            "Pays à haut risque: RU"
+        ],
+        "components": {
+            "failed_attempts": 24.11,
+            "attack_speed": 10.0,
+            "tool_detection": 15,
+            "geographic_risk": 10,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 15,
+            "failed_attempts": 14,
+            "success_attempts": 1,
+            "unique_users": [
+                "sara"
+            ],
+            "countries": [
+                "RU"
+            ],
+            "user_agents": [
+                "curl/8.1.2"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:15:35",
+            "last_seen": "2025-11-24 23:15:54"
+        }
+    },
+    "IP:5.56.59.52": {
+        "entity_type": "IP",
+        "entity_value": "5.56.59.52",
+        "score": 31.62,
+        "severity": "MEDIUM",
+        "reasons": [
+            "10 tentatives échouées (66.7%)",
+            "Attaque modérée (1.22s/req)"
+        ],
+        "components": {
+            "failed_attempts": 21.62,
+            "attack_speed": 10.0,
+            "tool_detection": 0,
+            "geographic_risk": 0,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 15,
+            "failed_attempts": 10,
+            "success_attempts": 5,
+            "unique_users": [
+                "developer"
+            ],
+            "countries": [
+                "DE"
+            ],
+            "user_agents": [
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2) Safari/604.1"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:15:50",
+            "last_seen": "2025-11-24 23:16:07"
+        }
+    },
+    "IP:36.102.53.11": {
+        "entity_type": "IP",
+        "entity_value": "36.102.53.11",
+        "score": 55.28,
+        "severity": "MEDIUM",
+        "reasons": [
+            "9 tentatives échouées (81.8%)",
+            "Attaque modérée (1.02s/req)",
+            "Outil automatisé: curl/8.1.2",
+            "Pays à haut risque: CN"
+        ],
+        "components": {
+            "failed_attempts": 20.28,
+            "attack_speed": 10.0,
+            "tool_detection": 15,
+            "geographic_risk": 10,
+            "user_spread": 0,
+            "persistence": 0
+        },
+        "stats": {
+            "total_attempts": 11,
+            "failed_attempts": 9,
+            "success_attempts": 2,
+            "unique_users": [
+                "itmanager"
+            ],
+            "countries": [
+                "CN"
+            ],
+            "user_agents": [
+                "curl/8.1.2"
+            ],
+            "targeted_hvt": [],
+            "first_seen": "2025-11-24 23:16:02",
+            "last_seen": "2025-11-24 23:16:13"
+        }
+    }
+}
